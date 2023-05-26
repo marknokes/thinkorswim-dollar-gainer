@@ -1,0 +1,10 @@
+def change = 1.00;
+def preMktVolMin = 50000;
+def mktClose = 1559;
+def preMktStart = 0400;
+def preMktEnd = 0929;
+rec closePrice = CompoundValue(1, if SecondsTillTime(mktClose) == 0 then close else closePrice[1], close);
+def gainers = (close - closePrice) >= change;
+def preMkt = SecondsFromTime(preMktStart) >= 0 and SecondsTillTime(preMktEnd) >= 0;
+def preMktVol = if preMkt and !preMkt[1] then volume else if preMkt then preMktVol[1] + volume else preMktVol[1];
+plot scan = preMkt and gainers and preMktVol > preMktVolMin;
